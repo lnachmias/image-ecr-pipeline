@@ -1,18 +1,25 @@
 pipeline {
     agent any
+
     stages {
-        stage('Terraform Init') {
+        stage('Checkout') {
             steps {
-                sh 'terraform -v'
-                sh 'docker --version'
-                sh 'cd Terraform/'
-                sh 'terraform init'
+            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/lnachmias/image-ecr-pipeline']]])            
+
+          }
+        }
+        
+        stage ("terraform init") {
+            steps {
+                sh ('terraform init') 
             }
         }
-        stage('Terraform Apply') {
+        
+        stage ("terraform Action") {
             steps {
-                sh 'terraform apply'
-            }
+                echo "Terraform action is --> ${action}"
+                sh ('terraform ${action} --auto-approve') 
+           }
         }
     }
 }
