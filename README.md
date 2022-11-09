@@ -1,0 +1,2 @@
+# Image ECR Pipeline
+This repo is pulled by Jenkins on the EC2 instance, applies the .tf file to create the ECR repository, and then builds a docker image through the files here to push onto said ECR repository. The Jenkinsfile for the pipeline is also present.
