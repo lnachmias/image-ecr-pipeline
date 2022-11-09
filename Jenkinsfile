@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    parameters {
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Pick something')
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -15,10 +17,10 @@ pipeline {
             }
         }
         
-        stage ("terraform Action") {
+        stage ("terraform action") {
             steps {
-                println "Terraform action is --> ${action}"
-                sh ('terraform ${action} --auto-approve') 
+                echo "Terraform action is --> ${params.ACTION}"
+                sh ("terraform ${params.ACTION} --auto-approve") 
            }
         }
     }
