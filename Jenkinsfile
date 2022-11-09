@@ -23,5 +23,12 @@ pipeline {
                 sh ("terraform ${params.ACTION} --auto-approve") 
            }
         }
-    }
+        stage ("Catch Repository URL") {
+            steps {
+                environment {
+                CREATED_REPO = sh(aws ecr describe-repositories --query "repositories[].[repositoryUri]" --output text)
+                echo "Your Repo URL is --> ${CREATED_REPO}"
+                }
+            }   
+        }
 }
