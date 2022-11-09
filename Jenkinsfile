@@ -25,10 +25,21 @@ pipeline {
         }
         stage ("Catch Repository URL") {
             steps {
-                environment {
-                COMMITS_ON_MASTER = sh(aws ecr describe-repositories --query "repositories[].[repositoryUri]" --output text)
+                script {
+                CREATED_REPO = sh (
+                    script: "aws ecr describe-repositories --query 'repositories[].[repositoryUri]' --output text",
+                    returnStdout: true
+                    ).trim()
                 }
+                echo "URL of the newly created repository --> ${CREATED_REPO}"
             }   
+        }
+        stage ("Docker Build") {
+            steps {
+                script {
+                dockerImage = docker.build ${CREATED_REPO}
+                }
+            }
         }
     }
 }
