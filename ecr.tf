@@ -29,12 +29,3 @@ resource "aws_ecr_repository_policy" "main-repo-policy" {
   }
   EOF
 }
-
-output "registry_id" {
-  description = "The account ID of the registry holding the repository."
-  value = main-repo.repository.registry_id
-}
-output "repository_url" {
-  description = "The URL of the repository."
-  value = main-repo.repository.repository_url
-}
