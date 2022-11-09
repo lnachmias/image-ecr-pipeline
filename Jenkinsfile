@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        registry = "bar"
+    }
     parameters {
         choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Pick something')
     }
@@ -23,23 +26,21 @@ pipeline {
                 sh ("terraform ${params.ACTION} --auto-approve") 
            }
         }
-        stage ("Catch Repository URL") {
+        stage ("Capture ECR Repository URL") {
             steps {
                 script {
                 CREATED_REPO = sh (
                     script: "aws ecr describe-repositories --query 'repositories[].[repositoryUri]' --output text",
                     returnStdout: true
                     ).trim()
-                }
-                echo "URL of the newly created repository --> ${CREATED_REPO}"
+                echo "URL of the newly created repository -->  ${CREATED_REPO}"
+                } 
+                sh ("sudo aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${CREATED_REPO}")
+                sh ("sudo docker build -t app-image .")
+                sh ("sudo docker tag app-image:latest ${CREATED_REPO}:latest")
+                sh ("sudo docker push ${CREATED_REPO}:latest")
             }   
         }
-        stage ("Docker Build") {
-            steps {
-                script {
-                dockerImage = docker.build ${CREATED_REPO}
-                }
-            }
-        }
+
     }
 }
