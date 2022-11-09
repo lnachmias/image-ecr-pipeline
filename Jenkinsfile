@@ -26,7 +26,7 @@ pipeline {
                 sh ("terraform ${params.ACTION} --auto-approve") 
            }
         }
-        stage ("Capture ECR Repository URL") {
+        stage ("Docker Build & Push") {
             steps {
                 script {
                 CREATED_REPO = sh (
