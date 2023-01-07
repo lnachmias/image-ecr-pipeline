@@ -35,7 +35,7 @@ pipeline {
                     ).trim()
                 echo "URL of the newly created repository -->  ${CREATED_REPO}"
                 } 
-                sh ("sudo aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin ${CREATED_REPO}")
+                sh ("sudo aws ecr get-login-password --region eu-west-2 | sudo docker login --username AWS --password-stdin ${CREATED_REPO}")
                 sh ("sudo docker build -t app-image .")
                 sh ("sudo docker tag app-image:latest ${CREATED_REPO}:latest")
                 sh ("sudo docker push ${CREATED_REPO}:latest")
